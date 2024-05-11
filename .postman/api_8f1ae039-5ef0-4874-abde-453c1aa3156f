@@ -16,5 +16,5 @@ rootDirectory = postman/collections
 files[] = {"path":"Nexa-API.yaml","metaData":{}}
 
 [config.relations.apiDefinition.metaData]
-type = openapi:3
+type = openapi:3_1
 rootFiles[] = Nexa-API.yaml

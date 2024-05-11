@@ -1,5 +1,5 @@
 ---
-openapi: 3.0.0
+openapi: 3.1.0
 info:
   title: AudioVideo Server API
   description: A RESTful API to control TV broadcast audio video servers
@@ -8,8 +8,8 @@ info:
     url: https://pynch.tv
     email: info@pynch.tv
   license:
-    name: CC-BY 4.0 license
-    url: https://creativecommons.org/licenses/by/4.0/
+    name: GPL
+    url: https://www.gnu.org/licenses/gpl-3.0.html
   version: 1.0.0
 servers:
 - url: http://192.168.0.157:8080/acme/unit11/v1
@@ -29,6 +29,7 @@ paths:
       - Capabilities
       summary: landing page
       description: "The landing page provides links to the API definition (in Link Header), and other resources in the API."
+      operationId: getLandingPage
       parameters:
       - name: f
         in: query
@@ -84,6 +85,7 @@ paths:
       - Capabilities
       summary: Check if the server is alive and responding
       description: "To see if the server is alive, using least resources (fastest return)"
+      operationId: headLandingPage
       responses:
         "204":
           description: a 204 response indicates the server is alive.
@@ -100,6 +102,7 @@ paths:
       tags:
       - Capabilities
       summary: json encoding of this API definition
+      operationId: getOpenApiJson
       responses:
         "200":
           description: API definition
@@ -112,6 +115,7 @@ paths:
       tags:
       - Capabilities
       summary: yaml encoding of this API definition
+      operationId: getOpenApiYaml
       responses:
         "200":
           description: API definition
@@ -133,6 +137,7 @@ paths:
       tags:
       - Capabilities
       summary: servers in the network
+      operationId: getServers
       parameters:
       - name: f
         in: query
@@ -233,6 +238,7 @@ paths:
       tags:
       - Server
       summary: describe the collection with id `serverId`
+      operationId: getServer
       parameters:
       - name: serverId
         in: path
@@ -310,6 +316,7 @@ paths:
       - Server
       summary: Identify the server amongst many servers
       description: Server blinks a light or beeps.
+      operationId: getIdentifyServer
       parameters:
       - name: serverId
         in: path
@@ -356,6 +363,7 @@ paths:
       tags:
       - Server
       summary: Subscribe to events
+      operationId: ServerSubscribe
       description: Add a subscriber.
       parameters:
       - name: serverId
@@ -415,6 +423,7 @@ paths:
       tags:
       - Server
       summary: Unsubscribe from events
+      operationId: ServerUnsubscribe
       description: Indicate a client is no longer listening to the event server.
       parameters:
       - name: serverId
@@ -467,6 +476,7 @@ paths:
       tags:
       - Discover data collections
       summary: collection 'programs'
+      operationId: GetServerOutputs
       description: |-
         Fetch programs of the collection with id `serverId`.
 
@@ -604,13 +614,14 @@ paths:
               schema:
                 type: string
       security: []
-  /servers/{serverId}/outputs/{programId}:
+  /servers/{serverId}/outputs/{outputId}:
     get:
       tags:
       - Output
       summary: fetch a single program
+      operationId: GetServerOutput
       description: |-
-        Fetch the program with id `programId` in the programs collection with id `serverId`.
+        Fetch the program with id `outputId` in the programs collection with id `serverId`.
 
         Use content negotiation to request HTML or JSON.
       parameters:
@@ -623,7 +634,7 @@ paths:
         schema:
           type: string
         example: XT2
-      - name: programId
+      - name: outputId
         in: path
         description: local identifier of a program
         required: true
@@ -681,6 +692,7 @@ paths:
       tags:
       - Output
       summary: Changes attributes of the Program ouput (used to play and stop clips by changing the status)
+      operationId: patchServerOutput
       parameters:
       - name: serverId
         in: path
@@ -691,7 +703,7 @@ paths:
         schema:
           type: string
         example: XT2
-      - name: programId
+      - name: outputId
         in: path
         description: local identifier of a program
         required: true
@@ -740,6 +752,7 @@ paths:
       tags:
       - Discover data collections
       summary: collection 'recorders'
+      operationId: getServerInputs
       description: |-
         Fetch recorders of the collection with id `serverId`.
 
@@ -877,13 +890,14 @@ paths:
               schema:
                 type: string
       security: []
-  /servers/{serverId}/inputs/{recorderId}:
+  /servers/{serverId}/inputs/{inputId}:
     get:
       tags:
       - Input
       summary: fetch a single recorder
+      operationId: getServerInput
       description: |-
-        Fetch the feature with id `programId` in the feature collection
+        Fetch the feature with id `inputId` in the feature collection
         with id `serverId`.
 
         Use content negotiation to request HTML or JSON.
@@ -897,7 +911,7 @@ paths:
         schema:
           type: string
         example: XT2
-      - name: recorderId
+      - name: inputId
         in: path
         description: local identifier of a recorder
         required: true
@@ -962,6 +976,7 @@ paths:
       tags:
       - Discover data collections
       summary: collection 'clips'
+      operationId: getServerClips
       description: |-
         Fetch clips of the collection with id `serverId`.
 
@@ -1103,6 +1118,7 @@ paths:
       tags:
       - Clips
       summary: Upload a clip to the server
+      operationId: uploadClipToServer
       description: "Upload a clip to the server. When successfull, an event with clip details will be emitted."
       parameters:
       - name: serverId
@@ -1164,6 +1180,7 @@ paths:
       tags:
       - Clips
       summary: fetch a single clip
+      operationId: getServerClip
       description: |-
         Fetch the feature with id `featureId` in the feature collection
         with id `serverId`.
@@ -1244,6 +1261,7 @@ paths:
       tags:
       - Clips
       summary: remove clip from server
+      operationId: deleteServerClip
       parameters:
       - name: serverId
         in: path
@@ -1307,6 +1325,7 @@ paths:
       tags:
       - Clips
       summary: Modify the attributes of an existing clip
+      operationId: patchServerClip
       description: Modify the attributes of an existing clip.
       parameters:
       - name: serverId
@@ -1380,6 +1399,7 @@ paths:
     get:
       tags:
       - Discover data collections
+      operationId: getServerPlaylists
       summary: collection 'playlists'
       description: |-
         Fetch playlists of the feature collection with id `serverId`.
@@ -1521,6 +1541,7 @@ paths:
     post:
       tags:
       - Playlist
+      operationId: postServerPlaylists
       summary: Upload a new playlist to the server
       description: Upload a playlist.
       parameters:
@@ -1557,6 +1578,7 @@ paths:
     get:
       tags:
       - Playlist
+      operationId: getServerPlaylist
       summary: fetch a single playlist
       description: |-
         Fetch the feature with id `programId` in the feature collection
@@ -1636,6 +1658,7 @@ paths:
     put:
       tags:
       - Playlist
+      operationId: putServerPlaylist
       summary: replace a single playlist
       description: |-
         Fetch the feature with id `programId` in the feature collection
@@ -1709,6 +1732,7 @@ paths:
       tags:
       - Playlist
       summary: remove playlist from server
+      operationId: deleteServerPlaylist
       parameters:
       - name: serverId
         in: path
