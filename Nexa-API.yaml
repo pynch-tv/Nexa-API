@@ -273,7 +273,6 @@ paths:
 
             * A local identifier for the collection that is unique for the dataset;
             * An optional title and description for the collection;
-            * An optional extent that can be used to provide an indication of the spatial and temporal extent of the collection - typically derived from the data;
             * An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'feature').
           headers:
             API-Version:
@@ -2200,25 +2199,25 @@ components:
             - href: http://schemas.example.org/1.0/buildings.xsd
               rel: describedBy
               type: application/xml
-              title: GML application schema for Acme Corporation building data
+              title: XML application schema for Acme Corporation building data
             - href: http://download.example.org/buildings.gpkg
               rel: enclosure
               type: application/geopackage+sqlite3
               title: Bulk download (GeoPackage)
               length: 472546
             servers:
-            - id: buildings
-              title: Buildings
-              description: Buildings in the city of Bonn.
+            - id: videos
+              title: Videos
+              description: Videos of a cool event.
               links:
-              - href: http://data.example.org/servers/buildings/items
+              - href: http://data.example.org/servers/videos/items
                 rel: items
                 type: application/json
                 title: Buildings
-              - href: http://data.example.org/servers/buildings/items.html
+              - href: http://data.example.org/servers/videos/items.html
                 rel: items
                 type: text/html
-                title: Buildings
+                title: Videos
               - href: https://creativecommons.org/publicdomain/zero/1.0/
                 rel: license
                 type: text/html
@@ -2241,7 +2240,6 @@ components:
 
         * A local identifier for the collection that is unique for the dataset;
         * An optional title and description for the collection;
-        * An optional extent that can be used to provide an indication of the spatial and temporal extent of the collection - typically derived from the data;
         * An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'feature').
       content:
         application/json:
@@ -2252,14 +2250,14 @@ components:
             title: Buildings
             description: Buildings in the city of Bonn.
             links:
-            - href: http://data.example.org/servers/buildings/items
+            - href: http://data.example.org/servers/videos/items
               rel: items
               type: application/json
-              title: Buildings
-            - href: http://data.example.org/servers/buildings/items.html
+              title: Videos
+            - href: http://data.example.org/servers/videos/items.html
               rel: items
               type: text/html
-              title: Buildings
+              title: Videos
             - href: https://creativecommons.org/publicdomain/zero/1.0/
               rel: license
               type: text/html
@@ -2391,7 +2389,7 @@ components:
       explode: false
       schema:
         type: string
-    recorderId:
+    inputId:
       name: recorderId
       in: path
       description: local identifier of a recorder
