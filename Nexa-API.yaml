@@ -1,0 +1,2468 @@
+---
+openapi: 3.0.0
+info:
+  title: AudioVideo Server API
+  description: A RESTful API to control TV broadcast audio video servers
+  contact:
+    name: Pynch.tv
+    url: https://pynch.tv
+    email: info@pynch.tv
+  license:
+    name: CC-BY 4.0 license
+    url: https://creativecommons.org/licenses/by/4.0/
+  version: 1.0.0
+servers:
+- url: http://192.168.0.157:8080/acme/unit11/v1
+  description: Test server (uses live data)
+- url: https://sandbox.pynch.tv:8080/v1
+  description: Sandbox server (uses test data)
+security:
+- BasicAuth: []
+- BearerAuth: []
+- ApiKeyAuth: []
+- OpenID: []
+- OAuth2: []
+paths:
+  /:
+    get:
+      tags:
+      - Capabilities
+      summary: landing page
+      description: "The landing page provides links to the API definition (in Link Header), and other resources in the API."
+      parameters:
+      - name: f
+        in: query
+        description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+          default: html
+          enum:
+          - json
+          - html
+      responses:
+        "200":
+          description: The landing page provides links to the API definition and the Feature servers (path `/servers`).
+          headers:
+            API-Version:
+              description: The version of the service.
+              required: true
+              style: simple
+              explode: false
+              schema:
+                $ref: '#/components/schemas/apiversion'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/landingPage'
+            text/html:
+              schema:
+                $ref: '#/components/schemas/htmlSchema'
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security: []
+    head:
+      tags:
+      - Capabilities
+      summary: Check if the server is alive and responding
+      description: "To see if the server is alive, using least resources (fastest return)"
+      responses:
+        "204":
+          description: a 204 response indicates the server is alive.
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                $ref: '#/components/schemas/apiversion'
+      security: []
+  /openapi.json:
+    get:
+      tags:
+      - Capabilities
+      summary: json encoding of this API definition
+      responses:
+        "200":
+          description: API definition
+          content:
+            application/vnd.oai.openapi+json;version=3.0:
+              schema:
+                type: string
+  /openapi.yaml:
+    get:
+      tags:
+      - Capabilities
+      summary: yaml encoding of this API definition
+      responses:
+        "200":
+          description: API definition
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+          content:
+            application/vnd.oai.openapi;version=3.0:
+              schema:
+                type: string
+  /servers:
+    get:
+      tags:
+      - Capabilities
+      summary: servers in the network
+      parameters:
+      - name: f
+        in: query
+        description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+          default: html
+          enum:
+          - json
+          - html
+      responses:
+        "200":
+          description: |-
+            The media servers shared by this API.
+
+            The dataset is organized as one or more media servers. This resource
+            provides information about and access to the servers.
+
+            The response contains the list of servers. For each collection, a link
+            to the items in the collection (path `/servers/{serverId}/items`,
+            link relation `items`) as well as key information about the collection.
+            This information includes:
+
+            * A local identifier for the collection that is unique for the dataset;
+            * An optional title and description for the collection;
+            * An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'clip').
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/servers'
+              example:
+                links:
+                - href: http://data.example.org/servers.json
+                  rel: self
+                  type: application/json
+                  title: this document
+                - href: http://data.example.org/servers.html
+                  rel: alternate
+                  type: text/html
+                  title: this document as HTML
+                servers:
+                - id: 123456
+                  title: clips
+                  description: Video clips of cudly animals.
+                  links:
+                  - href: http://data.example.org/servers/123456/clips
+                    rel: items
+                    type: application/json
+                    title: clips
+                  - href: http://data.example.org/servers/123456/clips.html
+                    rel: items
+                    type: text/html
+                    title: clips
+                  - href: https://creativecommons.org/publicdomain/zero/1.0/
+                    rel: license
+                    type: text/html
+                    title: CC0-1.0
+                  - href: https://creativecommons.org/publicdomain/zero/1.0/rdf
+                    rel: license
+                    type: application/rdf+xml
+                    title: CC0-1.0
+            text/html:
+              schema:
+                type: string
+        "404":
+          description: Server with `serverId` not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security: []
+  /servers/{serverId}:
+    get:
+      tags:
+      - Server
+      summary: describe the collection with id `serverId`
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: f
+        in: query
+        description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+          default: html
+          enum:
+          - json
+          - html
+      responses:
+        "200":
+          description: |-
+            Information about the server with id `serverId`.
+
+            The response contains a linkto the items in the collection
+            (path `/servers/{serverId}/items`,link relation `items`)
+            as well as key information about the collection. This information
+            includes:
+
+            * A local identifier for the collection that is unique for the dataset;
+            * An optional title and description for the collection;
+            * An optional extent that can be used to provide an indication of the spatial and temporal extent of the collection - typically derived from the data;
+            * An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'feature').
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/landingPage'
+            text/html:
+              schema:
+                type: string
+        "404":
+          description: Server with `serverId` not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security: []
+  /servers/{serverId}/identify:
+    get:
+      tags:
+      - Server
+      summary: Identify the server amongst many servers
+      description: Server blinks a light or beeps.
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      responses:
+        "204":
+          description: No response
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+        "404":
+          description: Server with `serverId` not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security: []
+  /servers/{serverId}/subscribe:
+    post:
+      tags:
+      - Server
+      summary: Subscribe to events
+      description: Add a subscriber.
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/serverId_subscribe_body'
+      responses:
+        "200":
+          description: "OK, response contains Uri to Event server"
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/serverId_subscribe_response'
+            text/html:
+              schema:
+                type: string
+        "404":
+          description: Server with `serverId` not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security: []
+  /servers/{serverId}/unsubscribe:
+    post:
+      tags:
+      - Server
+      summary: Unsubscribe from events
+      description: Indicate a client is no longer listening to the event server.
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/serverId_unsubscribe_body'
+      responses:
+        "200":
+          description: OK
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+        "404":
+          description: Server with `serverId` not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security: []
+  /servers/{serverId}/outputs:
+    get:
+      tags:
+      - Discover data collections
+      summary: collection 'programs'
+      description: |-
+        Fetch programs of the collection with id `serverId`.
+
+        Every program in a dataset belongs to a collection. A dataset may
+        consist of servers. A  collection consists of Programs, Recorders, Clips and Playlists.
+
+        Use content negotiation to request HTML or JSON.
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: f
+        in: query
+        description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+          default: html
+          enum:
+          - json
+          - html
+      - name: limit
+        in: query
+        description: |-
+          The optional limit parameter limits the number of items that are presented in the response document.
+
+          Only items are counted that are on the first level of the collection in the response document.
+          Nested objects contained within the explicitly requested items shall not be counted.
+
+          Minimum = 1. Maximum = 10000. Default = 10.
+        required: false
+        style: form
+        explode: false
+        schema:
+          maximum: 10000
+          minimum: 1
+          type: integer
+          default: 10
+      - name: offset
+        in: query
+        description: The optional offset parameter ...
+        required: false
+        style: form
+        explode: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 0
+      - name: filter
+        in: query
+        description: |-
+          The optional filter parameter ~~~.
+
+          ~~~.
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+      - name: orderby
+        in: query
+        description: |-
+          The optional orderby parameter ~~~.
+
+          ~~~~.
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: |-
+            The response is a document consisting of programs in the collection.
+            The programs included in the response are determined by the server
+            based on the query parameters of the request. To support access to
+            larger servers without overloading the client, the API supports
+            paged access with links to the next page, if more resources are selected
+            that the page size.
+
+            The `limit` parameter may be used to control the subset of the
+            selected resources that should be returned in the response, the page size.
+            Each page may include information about the number of selected and
+            returned programs (`numberMatched` and `numberReturned`) as well as
+            links to support paging (link relation `next`).
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/program'
+            text/html:
+              schema:
+                type: string
+        "400":
+          description: A query parameter has an invalid value.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "404":
+          description: Server with `serverId` not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security: []
+  /servers/{serverId}/outputs/{programId}:
+    get:
+      tags:
+      - Output
+      summary: fetch a single program
+      description: |-
+        Fetch the program with id `programId` in the programs collection with id `serverId`.
+
+        Use content negotiation to request HTML or JSON.
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: programId
+        in: path
+        description: local identifier of a program
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: PGM2
+      - name: f
+        in: query
+        description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+          default: html
+          enum:
+          - json
+          - html
+      responses:
+        "200":
+          description: |-
+            fetch the feature with id `programId` in the feature collection
+            with id `serverId`
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+          content:
+            application/json:
+              schema:
+                type: string
+            text/html:
+              schema:
+                type: string
+        "404":
+          description: Server with `serverId` or `programId` not found.
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security: []
+    patch:
+      tags:
+      - Output
+      summary: Changes attributes of the Program ouput (used to play and stop clips by changing the status)
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: programId
+        in: path
+        description: local identifier of a program
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: PGM2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/program'
+      responses:
+        "204":
+          description: altered
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+        "404":
+          description: The requested URI was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+  /servers/{serverId}/inputs:
+    get:
+      tags:
+      - Discover data collections
+      summary: collection 'recorders'
+      description: |-
+        Fetch recorders of the collection with id `serverId`.
+
+        Every feature in a dataset belongs to a collection. A dataset may
+        consist of multiple feature servers.
+
+        Use content negotiation to request HTML or JSON.
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: f
+        in: query
+        description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+          default: html
+          enum:
+          - json
+          - html
+      - name: limit
+        in: query
+        description: |-
+          The optional limit parameter limits the number of items that are presented in the response document.
+
+          Only items are counted that are on the first level of the collection in the response document.
+          Nested objects contained within the explicitly requested items shall not be counted.
+
+          Minimum = 1. Maximum = 10000. Default = 10.
+        required: false
+        style: form
+        explode: false
+        schema:
+          maximum: 10000
+          minimum: 1
+          type: integer
+          default: 10
+      - name: offset
+        in: query
+        description: The optional offset parameter ...
+        required: false
+        style: form
+        explode: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 0
+      - name: filter
+        in: query
+        description: |-
+          The optional filter parameter ~~~.
+
+          ~~~.
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+      - name: orderby
+        in: query
+        description: |-
+          The optional orderby parameter ~~~.
+
+          ~~~~.
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: |-
+            The response is a document consisting of recorders in the collection.
+            The recorders included in the response are determined by the server
+            based on the query parameters of the request. To support access to
+            larger servers without overloading the client, the API supports
+            paged access with links to the next page, if more recorders are selected
+            that the page size.
+
+            The `limit` parameter may be used to control the subset of the
+            selected recorders that should be returned in the response, the page size.
+            Each page may include information about the number of selected and
+            returned recorders (`numberMatched` and `numberReturned`) as well as
+            links to support paging (link relation `next`).
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recorder'
+            text/html:
+              schema:
+                type: string
+        "400":
+          description: A query parameter has an invalid value.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "404":
+          description: The requested URI was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security: []
+  /servers/{serverId}/inputs/{recorderId}:
+    get:
+      tags:
+      - Input
+      summary: fetch a single recorder
+      description: |-
+        Fetch the feature with id `programId` in the feature collection
+        with id `serverId`.
+
+        Use content negotiation to request HTML or JSON.
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: recorderId
+        in: path
+        description: local identifier of a recorder
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: f
+        in: query
+        description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+          default: html
+          enum:
+          - json
+          - html
+      responses:
+        "200":
+          description: |-
+            fetch the feature with id `recorderId` in the feature collection
+            with id `serverId`
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recorder'
+            text/html:
+              schema:
+                type: string
+        "404":
+          description: The requested URI was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security: []
+  /servers/{serverId}/clips:
+    get:
+      tags:
+      - Discover data collections
+      summary: collection 'clips'
+      description: |-
+        Fetch clips of the collection with id `serverId`.
+
+        Every clip in a dataset belongs to a collection. A dataset may
+        consist of multiple clip servers.
+
+        Use content negotiation to request HTML or JSON.
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: f
+        in: query
+        description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+          default: html
+          enum:
+          - json
+          - html
+      - name: limit
+        in: query
+        description: |-
+          The optional limit parameter limits the number of items that are presented in the response document.
+
+          Only items are counted that are on the first level of the collection in the response document.
+          Nested objects contained within the explicitly requested items shall not be counted.
+
+          Minimum = 1. Maximum = 10000. Default = 10.
+        required: false
+        style: form
+        explode: false
+        schema:
+          maximum: 10000
+          minimum: 1
+          type: integer
+          default: 10
+      - name: offset
+        in: query
+        description: The optional offset parameter ...
+        required: false
+        style: form
+        explode: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 0
+      - name: filter
+        in: query
+        description: |-
+          The optional filter parameter ~~~.
+
+          ~~~.
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+      - name: orderby
+        in: query
+        description: |-
+          The optional orderby parameter ~~~.
+
+          ~~~~.
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: |-
+            The response is a document consisting of clips in the collection.
+            The clips included in the response are determined by the server
+            based on the query parameters of the request. To support access to
+            larger servers without overloading the client, the API supports
+            paged access with links to the next page, if more clips are selected
+            that the page size.
+
+            The `limit` parameter may be used to control the subset of the
+            selected clips that should be returned in the response, the page size.
+            Each page may include information about the number of selected and
+            returned clips (`numberMatched` and `numberReturned`) as well as
+            links to support paging (link relation `next`).
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+          content:
+            application/json:
+              schema:
+                type: string
+            text/html:
+              schema:
+                type: string
+        "400":
+          description: A query parameter has an invalid value.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "404":
+          description: The requested URI was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security: []
+    post:
+      tags:
+      - Clips
+      summary: Upload a clip to the server
+      description: "Upload a clip to the server. When successfull, an event with clip details will be emitted."
+      parameters:
+      - name: serverId
+        in: path
+        description: identifier of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: filename
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: wedding.mp4
+      - name: slot
+        in: query
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: "1"
+      requestBody:
+        content:
+          video/mp4:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "201":
+          description: Media uploaded
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+            Location:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: url
+                example: $reference server URL here$
+      security:
+      - OAuth2:
+        - admin
+  /servers/{serverId}/clips/{clipId}:
+    get:
+      tags:
+      - Clips
+      summary: fetch a single clip
+      description: |-
+        Fetch the feature with id `featureId` in the feature collection
+        with id `serverId`.
+
+        Use content negotiation to request HTML or JSON.
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: clipId
+        in: path
+        description: local identifier of a clip
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: "1234[y]9"
+      - name: f
+        in: query
+        description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+          default: html
+          enum:
+          - json
+          - html
+      responses:
+        "200":
+          description: |-
+            fetch the feature with id `featureId` in the feature collection
+            with id `serverId`
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/clip'
+            text/html:
+              schema:
+                type: string
+        "404":
+          description: The requested URI was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security: []
+    delete:
+      tags:
+      - Clips
+      summary: remove clip from server
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: clipId
+        in: path
+        description: local identifier of a clip
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: "1234[y]9"
+      responses:
+        "202":
+          description: clip removed
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+          content:
+            application/json:
+              schema:
+                type: string
+            text/html:
+              schema:
+                type: string
+        "404":
+          description: The requested clip was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security:
+      - OAuth2:
+        - admin
+    patch:
+      tags:
+      - Clips
+      summary: Modify the attributes of an existing clip
+      description: Modify the attributes of an existing clip.
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: clipId
+        in: path
+        description: local identifier of a clip
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: "1234[y]9"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/clips_clipId_body'
+      responses:
+        "200":
+          description: OK
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+        "204":
+          description: No Content
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+        "404":
+          description: The requested clip was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security:
+      - OAuth2:
+        - admin
+  /servers/{serverId}/playlists:
+    get:
+      tags:
+      - Discover data collections
+      summary: collection 'playlists'
+      description: |-
+        Fetch playlists of the feature collection with id `serverId`.
+
+        Every feature in a dataset belongs to a collection. A dataset may
+        consist of multiple feature servers.
+
+        Use content negotiation to request HTML or JSON.
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: f
+        in: query
+        description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+          default: html
+          enum:
+          - json
+          - html
+      - name: limit
+        in: query
+        description: |-
+          The optional limit parameter limits the number of items that are presented in the response document.
+
+          Only items are counted that are on the first level of the collection in the response document.
+          Nested objects contained within the explicitly requested items shall not be counted.
+
+          Minimum = 1. Maximum = 10000. Default = 10.
+        required: false
+        style: form
+        explode: false
+        schema:
+          maximum: 10000
+          minimum: 1
+          type: integer
+          default: 10
+      - name: offset
+        in: query
+        description: The optional offset parameter ...
+        required: false
+        style: form
+        explode: false
+        schema:
+          minimum: 1
+          type: integer
+          default: 0
+      - name: filter
+        in: query
+        description: |-
+          The optional filter parameter ~~~.
+
+          ~~~.
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+      - name: orderby
+        in: query
+        description: |-
+          The optional orderby parameter ~~~.
+
+          ~~~~.
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: |-
+            The response is a document consisting of playlists in the collection.
+            The playlists included in the response are determined by the server
+            based on the query parameters of the request. To support access to
+            larger servers without overloading the client, the API supports
+            paged access with links to the next page, if more playlists are selected
+            that the page size.
+
+            The `limit` parameter may be used to control the subset of the
+            selected playlists that should be returned in the response, the page size.
+            Each page may include information about the number of selected and
+            returned playlists (`numberMatched` and `numberReturned`) as well as
+            links to support paging (link relation `next`).
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+          content:
+            application/json:
+              schema:
+                type: string
+            text/html:
+              schema:
+                type: string
+        "400":
+          description: A query parameter has an invalid value.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "404":
+          description: The requested URI was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security: []
+    post:
+      tags:
+      - Playlist
+      summary: Upload a new playlist to the server
+      description: Upload a playlist.
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/serverId_playlists_body'
+      responses:
+        "201":
+          description: Webhook created
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+      security:
+      - OAuth2:
+        - admin
+  /servers/{serverId}/playlists/{playlistId}:
+    get:
+      tags:
+      - Playlist
+      summary: fetch a single playlist
+      description: |-
+        Fetch the feature with id `programId` in the feature collection
+        with id `serverId`.
+
+        Use content negotiation to request HTML or JSON.
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: playlistId
+        in: path
+        description: local identifier of a playlist
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: f
+        in: query
+        description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+          default: html
+          enum:
+          - json
+          - html
+      responses:
+        "200":
+          description: |-
+            fetch the feature with id `recorderId` in the feature collection
+            with id `serverId`
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/playlist'
+            text/html:
+              schema:
+                type: string
+        "404":
+          description: The requested server of playlist was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security: []
+    put:
+      tags:
+      - Playlist
+      summary: replace a single playlist
+      description: |-
+        Fetch the feature with id `programId` in the feature collection
+        with id `serverId`.
+
+        Use content negotiation to request HTML or JSON.
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: playlistId
+        in: path
+        description: local identifier of a playlist
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: f
+        in: query
+        description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
+        required: false
+        style: form
+        explode: false
+        schema:
+          type: string
+          default: html
+          enum:
+          - json
+          - html
+      responses:
+        "200":
+          description: |-
+            fetch the feature with id `recorderId` in the feature collection
+            with id `serverId`
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+          content:
+            application/json:
+              schema:
+                type: string
+            text/html:
+              schema:
+                type: string
+        "404":
+          description: The requested URI was not found.
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security: []
+    delete:
+      tags:
+      - Playlist
+      summary: remove playlist from server
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: playlistId
+        in: path
+        description: local identifier of a playlist
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        "202":
+          description: playlist removed
+          headers:
+            API-Version:
+              required: true
+              style: simple
+              explode: false
+              schema:
+                type: string
+                format: version
+                example: 1.0.2
+          content:
+            application/json:
+              schema:
+                type: string
+            text/html:
+              schema:
+                type: string
+        "404":
+          description: The requested server or playlist was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+        "500":
+          description: A server error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/exception'
+            text/html:
+              schema:
+                type: string
+      security:
+      - OAuth2:
+        - admin
+components:
+  schemas:
+    htmlSchema:
+      type: string
+      example: <html>...</html>
+    collection:
+      required:
+      - id
+      - links
+      type: object
+      properties:
+        id:
+          type: string
+          description: "identifier of the collection used, for example, in URIs"
+          example: address
+        title:
+          type: string
+          description: human readable title of the collection
+          example: address
+        description:
+          type: string
+          description: a description of the elements in the collection
+          example: An address.
+        links:
+          type: array
+          example:
+          - href: http://data.example.com/buildings
+            rel: item
+          - href: http://example.com/concepts/buildings.html
+            rel: describedBy
+            type: text/html
+          items:
+            $ref: '#/components/schemas/link'
+        itemType:
+          type: string
+          description: indicator about the type of the items in the collection (the default value is 'feature').
+          default: feature
+    servers:
+      required:
+      - links
+      - servers
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        servers:
+          type: array
+          items:
+            $ref: '#/components/schemas/collection'
+    server:
+      required:
+      - links
+      - servers
+      type: object
+      properties:
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/link'
+        servers:
+          type: array
+          items:
+            $ref: '#/components/schemas/collection'
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        clipCount:
+          type: integer
+        playlistCount:
+          type: integer
+        programCount:
+          type: integer
+        recorderCount:
+          type: integer
+        status:
+          type: string
+          example: mounted
+        memoryBanks:
+          type: array
+          items:
+            $ref: '#/components/schemas/memoryBank'
+    confClasses:
+      required:
+      - conformsTo
+      type: object
+      properties:
+        conformsTo:
+          type: array
+          items:
+            type: string
+    exception:
+      required:
+      - code
+      type: object
+      properties:
+        code:
+          type: string
+        description:
+          type: string
+      description: "Information about the exception: an error code plus an optional description."
+    landingPage:
+      required:
+      - links
+      type: object
+      properties:
+        title:
+          type: string
+          example: AudioVideo server
+        description:
+          type: string
+          example: Serving the best videos in town.
+        attribution:
+          type: string
+          example: Videos attributed to Kind Lear.
+        serverCount:
+          type: number
+          example: 1
+    eventMessage:
+      required:
+      - topic
+      type: object
+      properties:
+        topic:
+          type: string
+          example: program
+        item:
+          type: string
+          example: timecode
+        data:
+          $ref: '#/components/schemas/eventMessageData'
+    eventMessageData:
+      required:
+      - topic
+      type: object
+      properties:
+        manafacturer:
+          type: string
+          example: EVS
+        server:
+          type: string
+          example: XT2
+        program:
+          type: string
+          example: PGM2
+        fps:
+          type: integer
+          example: 50
+        remainingTimeCode:
+          type: string
+          example: 00:00:00:00
+    link:
+      required:
+      - href
+      type: object
+      properties:
+        href:
+          type: string
+          example: http://data.example.com/machines/123
+        rel:
+          type: string
+          example: alternate
+        type:
+          type: string
+          example: application/json
+        hreflang:
+          type: string
+          example: en
+        title:
+          type: string
+          example: Name of the Audio/Video Server in a network
+        length:
+          type: integer
+    recorder:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a389a212-68ca-414d-ba48-e4fd9766ad12
+        name:
+          type: string
+          example: REC1
+        number:
+          type: integer
+          example: 1
+    apiversion:
+      type: string
+      format: uri
+      example: 1.0.2
+    clip:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a389a212-68ca-414d-ba48-e4fd9766ad12
+        name:
+          type: string
+          example: REC1
+        number:
+          type: integer
+          example: 1
+    playlist:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a389a212-68ca-414d-ba48-e4fd9766ad12
+        name:
+          type: string
+          example: REC1
+        number:
+          type: integer
+          example: 1
+    status:
+      type: object
+      properties:
+        state:
+          type: string
+          enum:
+          - stop
+          - start
+          - pause
+          - live
+          - timecode
+        TimeCodeIn:
+          type: string
+          example: 00:00:00:00
+        TimeCodeOut:
+          type: string
+          example: 00:00:03:15
+    osd:
+      type: object
+      properties:
+        revision:
+          type: string
+          description: |
+            a number representing the time at which the status of the program has been read
+          format: int64
+          example: "68954"
+        status:
+          $ref: '#/components/schemas/status'
+    program:
+      type: object
+      properties:
+        clip:
+          type: string
+          example: CLP1
+        status:
+          $ref: '#/components/schemas/status'
+    memoryBank:
+      type: object
+      properties:
+        id:
+          type: string
+          example: a389a212-68ca-414d-ba48-e4fd9766ad12
+        status:
+          type: string
+          example: mounted
+        properties:
+          type: string
+    serverId_subscribe_body:
+      type: object
+      properties:
+        topic:
+          type: string
+          example: all
+      description: topic to subscribe to
+    serverId_subscribe_response:
+      type: object
+      properties:
+        wsServiceUrls:
+          type: string
+          example: all
+      description: topic to subscribe to
+    serverId_unsubscribe_body:
+      type: object
+      properties:
+        topic:
+          type: string
+          example: all
+      description: topic to subscribe to
+    serverId_clips_body:
+      type: object
+      properties:
+        topic:
+          type: string
+          example: all
+        callbackUrl:
+          type: string
+          example: all
+      description: topic to subscribe to
+    clips_clipId_body:
+      type: object
+      properties:
+        topic:
+          type: string
+          example: all
+        callbackUrl:
+          type: string
+          example: all
+      description: topic to subscribe to
+    serverId_playlists_body:
+      type: object
+      properties:
+        topic:
+          type: string
+          example: all
+        callbackUrl:
+          type: string
+          example: all
+      description: topic to subscribe to
+  responses:
+    LandingPage:
+      description: |-
+        The landing page provides links to the API definition
+        (link relations `service-desc` and `service-doc`),
+        the Conformance declaration (path `/conformance`,
+        link relation `conformance`), and the Feature
+        servers (path `/servers`, link relation
+        `data`).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/landingPage'
+          example:
+            title: Buildings in Bonn
+            description: Access to data about unit15 via a Web API that conforms to this API specification.
+            links:
+            - href: http://data.example.org/
+              rel: self
+              type: application/json
+              title: this document
+            - href: http://data.example.org/api
+              rel: service-desc
+              type: application/vnd.oai.openapi+json;version=3.0
+              title: the API definition
+            - href: http://data.example.org/api.html
+              rel: service-doc
+              type: text/html
+              title: the API documentation
+            - href: http://data.example.org/conformance
+              rel: conformance
+              type: application/json
+              title: API conformance classes implemented by this server
+            - href: http://data.example.org/servers
+              rel: data
+              type: application/json
+              title: Information about the feature servers
+        text/html:
+          schema:
+            type: string
+    ConformanceDeclaration:
+      description: |-
+        The URIs of all conformance classes supported by the server.
+
+        To support "generic" clients that want to access multiple
+        API implementations - and not "just" a specific
+        API / server, the server declares the conformance
+        classes it implements and conforms to.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/confClasses'
+          example:
+            conformsTo:
+            - http://www.opengis.net/spec/api-1/1.0/conf/core
+            - http://www.opengis.net/spec/api-1/1.0/conf/oas30
+            - http://www.opengis.net/spec/api-1/1.0/conf/html
+            - http://www.opengis.net/spec/api-1/1.0/conf/json
+        text/html:
+          schema:
+            type: string
+    servers:
+      description: |-
+        The feature servers shared by this API.
+
+        The dataset is organized as one or more feature servers. This resource
+        provides information about and access to the servers.
+
+        The response contains the list of servers. For each collection, a link
+        to the items in the collection (path `/servers/{serverId}/items`,
+        link relation `items`) as well as key information about the collection.
+        This information includes:
+
+        * A local identifier for the collection that is unique for the dataset;
+        * An optional title and description for the collection;
+        * An optional extent that can be used to provide an indication of the spatial and temporal extent of the collection - typically derived from the data;
+        * An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'feature').
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/servers'
+          example:
+            links:
+            - href: http://data.example.org/servers.json
+              rel: self
+              type: application/json
+              title: this document
+            - href: http://data.example.org/servers.html
+              rel: alternate
+              type: text/html
+              title: this document as HTML
+            - href: http://schemas.example.org/1.0/buildings.xsd
+              rel: describedBy
+              type: application/xml
+              title: GML application schema for Acme Corporation building data
+            - href: http://download.example.org/buildings.gpkg
+              rel: enclosure
+              type: application/geopackage+sqlite3
+              title: Bulk download (GeoPackage)
+              length: 472546
+            servers:
+            - id: buildings
+              title: Buildings
+              description: Buildings in the city of Bonn.
+              links:
+              - href: http://data.example.org/servers/buildings/items
+                rel: items
+                type: application/json
+                title: Buildings
+              - href: http://data.example.org/servers/buildings/items.html
+                rel: items
+                type: text/html
+                title: Buildings
+              - href: https://creativecommons.org/publicdomain/zero/1.0/
+                rel: license
+                type: text/html
+                title: CC0-1.0
+              - href: https://creativecommons.org/publicdomain/zero/1.0/rdf
+                rel: license
+                type: application/rdf+xml
+                title: CC0-1.0
+        text/html:
+          schema:
+            type: string
+    Collection:
+      description: |-
+        Information about the feature collection with id `serverId`.
+
+        The response contains a linkto the items in the collection
+        (path `/servers/{serverId}/items`,link relation `items`)
+        as well as key information about the collection. This information
+        includes:
+
+        * A local identifier for the collection that is unique for the dataset;
+        * An optional title and description for the collection;
+        * An optional extent that can be used to provide an indication of the spatial and temporal extent of the collection - typically derived from the data;
+        * An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'feature').
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/collection'
+          example:
+            id: buildings
+            title: Buildings
+            description: Buildings in the city of Bonn.
+            links:
+            - href: http://data.example.org/servers/buildings/items
+              rel: items
+              type: application/json
+              title: Buildings
+            - href: http://data.example.org/servers/buildings/items.html
+              rel: items
+              type: text/html
+              title: Buildings
+            - href: https://creativecommons.org/publicdomain/zero/1.0/
+              rel: license
+              type: text/html
+              title: CC0-1.0
+            - href: https://creativecommons.org/publicdomain/zero/1.0/rdf
+              rel: license
+              type: application/rdf+xml
+              title: CC0-1.0
+        text/html:
+          schema:
+            type: string
+    Clip:
+      description: blabla
+      content:
+        application/json:
+          schema:
+            type: string
+        text/html:
+          schema:
+            type: string
+    Playlist:
+      description: blabla
+      content:
+        application/json:
+          schema:
+            type: string
+        text/html:
+          schema:
+            type: string
+    Program:
+      description: blabla
+      content:
+        application/json:
+          schema:
+            type: string
+        text/html:
+          schema:
+            type: string
+    Recorder:
+      description: blabla
+      content:
+        application/json:
+          schema:
+            type: string
+        text/html:
+          schema:
+            type: string
+    InvalidParameter:
+      description: A query parameter has an invalid value.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/exception'
+        text/html:
+          schema:
+            type: string
+    NotFound:
+      description: The requested URI was not found.
+    ServerError:
+      description: A server error occurred.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/exception'
+        text/html:
+          schema:
+            type: string
+  parameters:
+    serverId:
+      name: serverId
+      in: path
+      description: serial number of the machine
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: XT2
+    programId:
+      name: programId
+      in: path
+      description: local identifier of a program
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: PGM2
+    datetime:
+      name: datetime
+      in: query
+      description: |-
+        Either a date-time or an interval, open or closed. Date and time expressions
+        adhere to RFC 3339. Open intervals are expressed using double-dots.
+
+        Examples:
+
+        * A date-time: "2018-02-12T23:20:50Z"
+        * A closed interval: "2018-02-12T00:00:00Z/2018-03-18T12:31:12Z"
+        * Open intervals: "2018-02-12T00:00:00Z/.." or "../2018-03-18T12:31:12Z"
+
+        Only elements that have a temporal property that intersects the value of
+        `datetime` are selected.
+
+        If a feature has multiple temporal properties, it is the decision of the
+        server whether only a single temporal property is used to determine
+        the extent or all relevant temporal properties.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+    clipId:
+      name: clipId
+      in: path
+      description: local identifier of a clip
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+      example: "1234[y]9"
+    playlistId:
+      name: playlistId
+      in: path
+      description: local identifier of a playlist
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+    recorderId:
+      name: recorderId
+      in: path
+      description: local identifier of a recorder
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+    filter:
+      name: filter
+      in: query
+      description: |-
+        The optional filter parameter ~~~.
+
+        ~~~.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+    orderby:
+      name: orderby
+      in: query
+      description: |-
+        The optional orderby parameter ~~~.
+
+        ~~~~.
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      description: |-
+        The optional limit parameter limits the number of items that are presented in the response document.
+
+        Only items are counted that are on the first level of the collection in the response document.
+        Nested objects contained within the explicitly requested items shall not be counted.
+
+        Minimum = 1. Maximum = 10000. Default = 10.
+      required: false
+      style: form
+      explode: false
+      schema:
+        maximum: 10000
+        minimum: 1
+        type: integer
+        default: 10
+    offset:
+      name: offset
+      in: query
+      description: The optional offset parameter ...
+      required: false
+      style: form
+      explode: false
+      schema:
+        minimum: 1
+        type: integer
+        default: 0
+    fCommon:
+      name: f
+      in: query
+      description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
+      required: false
+      style: form
+      explode: false
+      schema:
+        type: string
+        default: html
+        enum:
+        - json
+        - html
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+    BearerAuth:
+      type: http
+      scheme: bearer
+    ApiKeyAuth:
+      type: apiKey
+      name: X-API-Key
+      in: header
+    OpenID:
+      type: openIdConnect
+      openIdConnectUrl: https://example.com/.well-known/openid-configuration
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://example.com/oauth/authorize
+          tokenUrl: https://example.com/oauth/token
+          scopes:
+            read: Grants read access
+            write: Grants write access
+            admin: Grants access to admin operations
