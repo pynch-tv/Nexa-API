@@ -4,13 +4,13 @@ info:
   title: AudioVideo Server API
   description: A RESTful API to control TV broadcast audio video servers
   contact:
-    name: Pynch.tv
+    name: Pynch
     url: https://pynch.tv
     email: info@pynch.tv
   license:
-    name: GPL
-    url: https://www.gnu.org/licenses/gpl-3.0.html
-  version: 1.5.8
+    name: CC-BY 4.0 license
+    url: https://creativecommons.org/licenses/by/4.0/
+  version: 1.0.0
 servers:
 - url: http://192.168.0.157:8080/acme/unit11/v1
   description: Test server (uses live data)
@@ -24,12 +24,25 @@ security:
 - OAuth2: []
 paths:
   /:
+    head:
+      tags:
+      - Capabilities
+      summary: Check if the server is alive and responding
+      description: "To see if the server is alive, using least resources (fastest return)"
+      responses:
+        "204":
+          description: a 204 response indicates the server is alive.
+          headers:
+            API-Version:
+              required: true
+              schema:
+                $ref: '#/components/schemas/apiversion'
+      security: []
     get:
       tags:
       - Capabilities
       summary: landing page
       description: "The landing page provides links to the API definition (in Link Header), and other resources in the API."
-      operationId: getLandingPage
       parameters:
       - name: f
         in: query
@@ -45,13 +58,12 @@ paths:
           - html
       responses:
         "200":
-          description: The landing page provides links to the API definition and the Feature servers (path `/servers`).
+          description: |-
+            The landing page provides links to the API definition and the Feature servers (path `/servers`).
           headers:
             API-Version:
-              description: The version of the service.
+              description: "The version of the service."
               required: true
-              style: simple
-              explode: false
               schema:
                 $ref: '#/components/schemas/apiversion'
           content:
@@ -80,29 +92,11 @@ paths:
               schema:
                 type: string
       security: []
-    head:
-      tags:
-      - Capabilities
-      summary: Check if the server is alive and responding
-      description: "To see if the server is alive, using least resources (fastest return)"
-      operationId: headLandingPage
-      responses:
-        "204":
-          description: a 204 response indicates the server is alive.
-          headers:
-            API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                $ref: '#/components/schemas/apiversion'
-      security: []
   /openapi.json:
     get:
       tags:
       - Capabilities
       summary: json encoding of this API definition
-      operationId: getOpenApiJson
       responses:
         "200":
           description: API definition
@@ -115,15 +109,12 @@ paths:
       tags:
       - Capabilities
       summary: yaml encoding of this API definition
-      operationId: getOpenApiYaml
       responses:
         "200":
           description: API definition
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -137,7 +128,6 @@ paths:
       tags:
       - Capabilities
       summary: servers in the network
-      operationId: getServers
       parameters:
       - name: f
         in: query
@@ -170,8 +160,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -238,7 +226,6 @@ paths:
       tags:
       - Server
       summary: describe the collection with id `serverId`
-      operationId: getServer
       parameters:
       - name: serverId
         in: path
@@ -248,7 +235,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       - name: f
         in: query
         description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
@@ -273,12 +260,11 @@ paths:
 
             * A local identifier for the collection that is unique for the dataset;
             * An optional title and description for the collection;
+            * An optional extent that can be used to provide an indication of the spatial and temporal extent of the collection - typically derived from the data;
             * An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'feature').
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -286,7 +272,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/landingPage'
+                $ref: '#/components/schemas/server'
             text/html:
               schema:
                 type: string
@@ -314,8 +300,7 @@ paths:
       tags:
       - Server
       summary: Identify the server amongst many servers
-      description: Server blinks a light or beeps.
-      operationId: getIdentifyServer
+      description: Server blinks a light or beeps to distinguish itself from the many surrounding machines.
       parameters:
       - name: serverId
         in: path
@@ -325,15 +310,19 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
+        
+        
+        
+        
+        
+        
       responses:
         "204":
-          description: No response
+          description: "No response"
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -362,7 +351,6 @@ paths:
       tags:
       - Server
       summary: Subscribe to events
-      operationId: ServerSubscribe
       description: Add a subscriber.
       parameters:
       - name: serverId
@@ -373,7 +361,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       requestBody:
         content:
           application/json:
@@ -385,8 +373,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -422,7 +408,6 @@ paths:
       tags:
       - Server
       summary: Unsubscribe from events
-      operationId: ServerUnsubscribe
       description: Indicate a client is no longer listening to the event server.
       parameters:
       - name: serverId
@@ -433,7 +418,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       requestBody:
         content:
           application/json:
@@ -441,12 +426,10 @@ paths:
               $ref: '#/components/schemas/serverId_unsubscribe_body'
       responses:
         "200":
-          description: OK
+          description: "OK"
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -475,7 +458,6 @@ paths:
       tags:
       - Discover data collections
       summary: collection 'programs'
-      operationId: GetServerOutputs
       description: |-
         Fetch programs of the collection with id `serverId`.
 
@@ -492,7 +474,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       - name: f
         in: query
         description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
@@ -518,7 +500,7 @@ paths:
         style: form
         explode: false
         schema:
-          maximum: 10000
+          maximum: 100
           minimum: 1
           type: integer
           default: 10
@@ -572,8 +554,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -581,7 +561,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/program'
+                $ref: '#/components/schemas/output'
             text/html:
               schema:
                 type: string
@@ -617,10 +597,9 @@ paths:
     get:
       tags:
       - Output
-      summary: fetch a single program
-      operationId: GetServerOutput
+      summary: fetch a single output
       description: |-
-        Fetch the program with id `outputId` in the programs collection with id `serverId`.
+        Fetch the program with id `programId` in the programs collection with id `serverId`.
 
         Use content negotiation to request HTML or JSON.
       parameters:
@@ -632,10 +611,10 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       - name: outputId
         in: path
-        description: local identifier of a program
+        description: local identifier of an output
         required: true
         style: simple
         explode: false
@@ -662,8 +641,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -691,7 +668,6 @@ paths:
       tags:
       - Output
       summary: Changes attributes of the Program ouput (used to play and stop clips by changing the status)
-      operationId: patchServerOutput
       parameters:
       - name: serverId
         in: path
@@ -701,10 +677,10 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       - name: outputId
         in: path
-        description: local identifier of a program
+        description: local identifier of an output
         required: true
         style: simple
         explode: false
@@ -712,18 +688,18 @@ paths:
           type: string
         example: PGM2
       requestBody:
+        description: attributes to be altered
+        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/program'
+              type: string
       responses:
         "204":
           description: altered
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -751,7 +727,6 @@ paths:
       tags:
       - Discover data collections
       summary: collection 'recorders'
-      operationId: getServerInputs
       description: |-
         Fetch recorders of the collection with id `serverId`.
 
@@ -768,7 +743,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       - name: f
         in: query
         description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
@@ -848,8 +823,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -857,7 +830,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/recorder'
+                $ref: '#/components/schemas/input'
             text/html:
               schema:
                 type: string
@@ -893,10 +866,9 @@ paths:
     get:
       tags:
       - Input
-      summary: fetch a single recorder
-      operationId: getServerInput
+      summary: fetch a single input
       description: |-
-        Fetch the feature with id `inputId` in the feature collection
+        Fetch the feature with id `programId` in the feature collection
         with id `serverId`.
 
         Use content negotiation to request HTML or JSON.
@@ -909,10 +881,10 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       - name: inputId
         in: path
-        description: local identifier of a recorder
+        description: local identifier of an input
         required: true
         style: simple
         explode: false
@@ -938,8 +910,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -947,7 +917,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/recorder'
+                $ref: '#/components/schemas/input'
             text/html:
               schema:
                 type: string
@@ -975,7 +945,6 @@ paths:
       tags:
       - Discover data collections
       summary: collection 'clips'
-      operationId: getServerClips
       description: |-
         Fetch clips of the collection with id `serverId`.
 
@@ -992,7 +961,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       - name: f
         in: query
         description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
@@ -1072,8 +1041,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -1117,8 +1084,7 @@ paths:
       tags:
       - Clips
       summary: Upload a clip to the server
-      operationId: uploadClipToServer
-      description: "Upload a clip to the server. When successfull, an event with clip details will be emitted."
+      description: Upload a clip to the server. When successfull, an event with clip details will be emitted.
       parameters:
       - name: serverId
         in: path
@@ -1128,27 +1094,40 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
-      - name: filename
-        in: query
+        example: "XT2"
+      - in: query
+        description: Optional filename, if not provided, a random filename is generated
+        name: filename
         required: false
-        style: form
-        explode: true
         schema:
           type: string
           example: wedding.mp4
-      - name: slot
-        in: query
+      - in: query
+        description: The slot number to place the file, not used in every provider.
+        name: slot
         required: false
-        style: form
-        explode: true
         schema:
           type: string
-          example: "1"
+          example: 1
+      - in: query
+        description: By default all file all overwritten.
+        name: overwrite
+        required: false
+        schema:
+          type: boolean
+          example: true
       requestBody:
         content:
           video/mp4:
+            # any media type is accepted, functionally equivalent to `*/*`
             schema:
+              # a binary file of any type
+              type: string
+              format: binary
+          video/mpeg:
+            # any media type is accepted, functionally equivalent to `*/*`
+            schema:
+              # a binary file of any type
               type: string
               format: binary
       responses:
@@ -1157,16 +1136,13 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
                 example: 1.0.2
             Location:
+              description: path to the newly created video
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: url
@@ -1179,7 +1155,6 @@ paths:
       tags:
       - Clips
       summary: fetch a single clip
-      operationId: getServerClip
       description: |-
         Fetch the feature with id `featureId` in the feature collection
         with id `serverId`.
@@ -1194,7 +1169,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       - name: clipId
         in: path
         description: local identifier of a clip
@@ -1203,7 +1178,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: "1234[y]9"
+        example: "wedding.mp4"
       - name: f
         in: query
         description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
@@ -1212,10 +1187,12 @@ paths:
         explode: false
         schema:
           type: string
-          default: html
+          default: mp4
           enum:
           - json
           - html
+          - mp4
+          - mpeg
       responses:
         "200":
           description: |-
@@ -1224,8 +1201,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -1260,7 +1235,6 @@ paths:
       tags:
       - Clips
       summary: remove clip from server
-      operationId: deleteServerClip
       parameters:
       - name: serverId
         in: path
@@ -1270,7 +1244,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       - name: clipId
         in: path
         description: local identifier of a clip
@@ -1286,8 +1260,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -1324,7 +1296,6 @@ paths:
       tags:
       - Clips
       summary: Modify the attributes of an existing clip
-      operationId: patchServerClip
       description: Modify the attributes of an existing clip.
       parameters:
       - name: serverId
@@ -1335,7 +1306,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       - name: clipId
         in: path
         description: local identifier of a clip
@@ -1356,8 +1327,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -1367,8 +1336,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -1398,7 +1365,6 @@ paths:
     get:
       tags:
       - Discover data collections
-      operationId: getServerPlaylists
       summary: collection 'playlists'
       description: |-
         Fetch playlists of the feature collection with id `serverId`.
@@ -1416,7 +1382,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       - name: f
         in: query
         description: "Select the output format of the response. If no value is provided, the standard HTTP rules apply, i.e., the accept header will be used to determine the format."
@@ -1496,8 +1462,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -1540,7 +1504,6 @@ paths:
     post:
       tags:
       - Playlist
-      operationId: postServerPlaylists
       summary: Upload a new playlist to the server
       description: Upload a playlist.
       parameters:
@@ -1552,7 +1515,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       requestBody:
         content:
           application/json:
@@ -1564,8 +1527,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -1577,7 +1538,6 @@ paths:
     get:
       tags:
       - Playlist
-      operationId: getServerPlaylist
       summary: fetch a single playlist
       description: |-
         Fetch the feature with id `programId` in the feature collection
@@ -1593,7 +1553,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       - name: playlistId
         in: path
         description: local identifier of a playlist
@@ -1622,8 +1582,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -1657,7 +1615,6 @@ paths:
     put:
       tags:
       - Playlist
-      operationId: putServerPlaylist
       summary: replace a single playlist
       description: |-
         Fetch the feature with id `programId` in the feature collection
@@ -1673,7 +1630,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       - name: playlistId
         in: path
         description: local identifier of a playlist
@@ -1702,8 +1659,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -1731,7 +1686,6 @@ paths:
       tags:
       - Playlist
       summary: remove playlist from server
-      operationId: deleteServerPlaylist
       parameters:
       - name: serverId
         in: path
@@ -1741,7 +1695,7 @@ paths:
         explode: false
         schema:
           type: string
-        example: XT2
+        example: "XT2"
       - name: playlistId
         in: path
         description: local identifier of a playlist
@@ -1756,8 +1710,6 @@ paths:
           headers:
             API-Version:
               required: true
-              style: simple
-              explode: false
               schema:
                 type: string
                 format: version
@@ -1855,27 +1807,50 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/collection'
+        isConnected:
+          type: boolean
         id:
           type: string
-        title:
+          example: "XT2"
+        name:
           type: string
-        description:
+          example: "XT2"
+        model:
           type: string
+          example: "XT2"
+        manufacturer:
+          type: string
+          example: "EVS"
+        hardwareVersion:
+          type: string
+          example: "1.17"
+        softwareVersion:
+          type: string
+          example: "8.4"
+        serial:
+          type: string
+          example: "6543214"
+        host:
+          type: string
+          example: "192.168.0.100"
+        other:
+          type: string
+          example: "black and white chassis"
         clipCount:
           type: integer
+          example: 123
         playlistCount:
           type: integer
-        programCount:
+          example: 0
+        outputCount:
           type: integer
-        recorderCount:
+          example: 2
+        inputCount:
           type: integer
-        status:
-          type: string
-          example: mounted
-        memoryBanks:
-          type: array
-          items:
-            $ref: '#/components/schemas/memoryBank'
+          example: 1
+        upTime:
+          type: integer
+          example: 1
     confClasses:
       required:
       - conformsTo
@@ -1911,7 +1886,7 @@ components:
           example: Videos attributed to Kind Lear.
         serverCount:
           type: number
-          example: 1
+          example: 1.
     eventMessage:
       required:
       - topic
@@ -1925,6 +1900,7 @@ components:
           example: timecode
         data:
           $ref: '#/components/schemas/eventMessageData'
+
     eventMessageData:
       required:
       - topic
@@ -1944,7 +1920,7 @@ components:
           example: 50
         remainingTimeCode:
           type: string
-          example: 00:00:00:00
+          example: "00:00:00:00"
     link:
       required:
       - href
@@ -1967,7 +1943,7 @@ components:
           example: Name of the Audio/Video Server in a network
         length:
           type: integer
-    recorder:
+    input:
       type: object
       properties:
         id:
@@ -1979,6 +1955,15 @@ components:
         number:
           type: integer
           example: 1
+    output:
+      type: object
+      properties:
+        clip:
+          type: string
+          example: 
+        status:
+          $ref: '#/components/schemas/status'
+
     apiversion:
       type: string
       format: uri
@@ -2020,40 +2005,10 @@ components:
           - timecode
         TimeCodeIn:
           type: string
-          example: 00:00:00:00
+          example: "00:00:00:00"
         TimeCodeOut:
           type: string
-          example: 00:00:03:15
-    osd:
-      type: object
-      properties:
-        revision:
-          type: string
-          description: |
-            a number representing the time at which the status of the program has been read
-          format: int64
-          example: "68954"
-        status:
-          $ref: '#/components/schemas/status'
-    program:
-      type: object
-      properties:
-        clip:
-          type: string
-          example: CLP1
-        status:
-          $ref: '#/components/schemas/status'
-    memoryBank:
-      type: object
-      properties:
-        id:
-          type: string
-          example: a389a212-68ca-414d-ba48-e4fd9766ad12
-        status:
-          type: string
-          example: mounted
-        properties:
-          type: string
+          example: "00:00:03:15"
     serverId_subscribe_body:
       type: object
       properties:
@@ -2072,16 +2027,6 @@ components:
       type: object
       properties:
         topic:
-          type: string
-          example: all
-      description: topic to subscribe to
-    serverId_clips_body:
-      type: object
-      properties:
-        topic:
-          type: string
-          example: all
-        callbackUrl:
           type: string
           example: all
       description: topic to subscribe to
@@ -2159,10 +2104,10 @@ components:
             $ref: '#/components/schemas/confClasses'
           example:
             conformsTo:
-            - http://www.opengis.net/spec/api-1/1.0/conf/core
-            - http://www.opengis.net/spec/api-1/1.0/conf/oas30
-            - http://www.opengis.net/spec/api-1/1.0/conf/html
-            - http://www.opengis.net/spec/api-1/1.0/conf/json
+            - http://www.pynch.tv/spec/api-1/1.0/conf/core
+            - http://www.pynch.tv/spec/api-1/1.0/conf/oas30
+            - http://www.pynch.tv/spec/api-1/1.0/conf/html
+            - http://www.pynch.tv/spec/api-1/1.0/conf/json
         text/html:
           schema:
             type: string
@@ -2199,25 +2144,25 @@ components:
             - href: http://schemas.example.org/1.0/buildings.xsd
               rel: describedBy
               type: application/xml
-              title: XML application schema for Acme Corporation building data
+              title: GML application schema for Acme Corporation building data
             - href: http://download.example.org/buildings.gpkg
               rel: enclosure
               type: application/geopackage+sqlite3
               title: Bulk download (GeoPackage)
               length: 472546
             servers:
-            - id: videos
-              title: Videos
-              description: Videos of a cool event.
+            - id: buildings
+              title: Buildings
+              description: Buildings in the city of Bonn.
               links:
-              - href: http://data.example.org/servers/videos/items
+              - href: http://data.example.org/servers/buildings/items
                 rel: items
                 type: application/json
                 title: Buildings
-              - href: http://data.example.org/servers/videos/items.html
+              - href: http://data.example.org/servers/buildings/items.html
                 rel: items
                 type: text/html
-                title: Videos
+                title: Buildings
               - href: https://creativecommons.org/publicdomain/zero/1.0/
                 rel: license
                 type: text/html
@@ -2240,6 +2185,7 @@ components:
 
         * A local identifier for the collection that is unique for the dataset;
         * An optional title and description for the collection;
+        * An optional extent that can be used to provide an indication of the spatial and temporal extent of the collection - typically derived from the data;
         * An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'feature').
       content:
         application/json:
@@ -2250,14 +2196,14 @@ components:
             title: Buildings
             description: Buildings in the city of Bonn.
             links:
-            - href: http://data.example.org/servers/videos/items
+            - href: http://data.example.org/servers/buildings/items
               rel: items
               type: application/json
-              title: Videos
-            - href: http://data.example.org/servers/videos/items.html
+              title: Buildings
+            - href: http://data.example.org/servers/buildings/items.html
               rel: items
               type: text/html
-              title: Videos
+              title: Buildings
             - href: https://creativecommons.org/publicdomain/zero/1.0/
               rel: license
               type: text/html
@@ -2335,7 +2281,7 @@ components:
       explode: false
       schema:
         type: string
-      example: XT2
+      example: "XT2"
     programId:
       name: programId
       in: path
@@ -2389,7 +2335,7 @@ components:
       explode: false
       schema:
         type: string
-    inputId:
+    recorderId:
       name: recorderId
       in: path
       description: local identifier of a recorder
