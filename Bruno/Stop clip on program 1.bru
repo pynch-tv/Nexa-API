@@ -1,0 +1,21 @@
+meta {
+  name: Stop clip on program 1
+  type: http
+  seq: 30
+}
+
+patch {
+  url: {{base_url}}/servers/{{server}}/outputs/PGM1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+  	"status": "stop"
+  }
+}

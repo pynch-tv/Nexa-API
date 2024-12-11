@@ -1,0 +1,15 @@
+meta {
+  name: Clip
+  type: http
+  seq: 35
+}
+
+get {
+  url: {{base_url}}/servers/{{server}}/clips/1.test282.mp4?f=json
+  body: none
+  auth: none
+}
+
+headers {
+  accept: mp4
+}

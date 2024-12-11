@@ -1,0 +1,15 @@
+meta {
+  name: Output PGM1 Subscribe SSE
+  type: http
+  seq: 16
+}
+
+get {
+  url: {{base_url}}/servers/{{server}}/outputs/PGM1
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: text/event-stream
+}

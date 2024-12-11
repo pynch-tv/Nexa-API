@@ -1,0 +1,23 @@
+meta {
+  name: modify server attributes
+  type: http
+  seq: 11
+}
+
+patch {
+  url: {{base_url}}/servers/{{server}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+  	"properties": {
+  		"extra": "yesyes"
+  	}
+  }
+}

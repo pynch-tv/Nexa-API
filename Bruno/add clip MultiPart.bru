@@ -1,0 +1,21 @@
+meta {
+  name: add clip MultiPart
+  type: http
+  seq: 31
+}
+
+post {
+  url: {{base_url}}/servers/{{server}}/clips
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Content-Type: multipart/form-data
+  ~Prefer: async-response
+}
+
+body:multipart-form {
+  dfgdfg: wer
+  werwer: @file()
+}

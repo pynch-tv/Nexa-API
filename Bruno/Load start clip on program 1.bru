@@ -1,0 +1,24 @@
+meta {
+  name: Load start clip on program 1
+  type: http
+  seq: 28
+}
+
+patch {
+  url: {{base_url}}/servers/{{server}}/outputs/PGM1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+  	"clip": {
+  		"id": "1.1"
+  	},
+  	"status": "start"
+  }
+}
