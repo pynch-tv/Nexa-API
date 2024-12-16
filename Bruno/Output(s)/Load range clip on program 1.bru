@@ -1,0 +1,32 @@
+meta {
+  name: Load range clip on program 1
+  type: http
+  seq: 10
+}
+
+patch {
+  url: {{base_url}}/servers/{{server}}/outputs/PGM1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+  	"clip": {
+  		"id": "1.1",
+  		"offset": {
+  			"seconds": 1
+  		},
+  		"duration": {
+  			"timecode": "00:00:01:25"
+  		}
+  	},
+  	"status": "start",
+  	"speed": 100
+  }
+  
+}

@@ -1,0 +1,20 @@
+meta {
+  name: Clips met cql query
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/servers/{{server}}/clips?filter-lang=cql-text&filter=Id eq '1.1' AND Label='HyperDeck_0007.mp4'
+  body: none
+  auth: none
+}
+
+params:query {
+  filter-lang: cql-text
+  filter: Id eq '1.1' AND Label='HyperDeck_0007.mp4'
+}
+
+headers {
+  ~Accept: application/json
+}

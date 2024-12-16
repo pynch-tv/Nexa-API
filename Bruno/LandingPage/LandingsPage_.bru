@@ -1,0 +1,19 @@
+meta {
+  name: LandingsPage_
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}?f=json
+  body: none
+  auth: none
+}
+
+params:query {
+  f: json
+}
+
+headers {
+  Content-Type: application/json
+}

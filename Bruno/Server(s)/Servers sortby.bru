@@ -1,0 +1,15 @@
+meta {
+  name: Servers sortby
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{base_url}}/servers?sortby=+name,-id
+  body: none
+  auth: none
+}
+
+params:query {
+  sortby: name,-id
+}

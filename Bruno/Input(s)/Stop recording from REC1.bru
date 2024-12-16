@@ -1,0 +1,21 @@
+meta {
+  name: Stop recording from REC1
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{base_url}}/servers/{{server}}/inputs/REC1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+  	"status": "stop"
+  }
+}

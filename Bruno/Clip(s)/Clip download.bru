@@ -1,0 +1,15 @@
+meta {
+  name: Clip download
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{base_url}}/servers/{{server}}/clips/1.1
+  body: none
+  auth: none
+}
+
+headers {
+  accept: video/mp4
+}

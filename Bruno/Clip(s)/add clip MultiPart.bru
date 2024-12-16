@@ -1,0 +1,19 @@
+meta {
+  name: add clip MultiPart
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{base_url}}/servers/{{server}}/clips
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Content-Type: multipart/form-data
+}
+
+body:multipart-form {
+  : @file(C:\Users\Bart\Desktop\bart11.mp4)
+}

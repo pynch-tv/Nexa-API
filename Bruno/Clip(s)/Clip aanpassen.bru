@@ -1,0 +1,21 @@
+meta {
+  name: Clip aanpassen
+  type: http
+  seq: 11
+}
+
+patch {
+  url: {{base_url}}/servers/{{server}}/clips/1.1
+  body: json
+  auth: none
+}
+
+headers {
+  accept: mp4
+}
+
+body:json {
+  {
+    "keywords": ["1", "2"]
+  }
+}

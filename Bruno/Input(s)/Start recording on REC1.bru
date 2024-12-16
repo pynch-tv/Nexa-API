@@ -1,0 +1,22 @@
+meta {
+  name: Start recording on REC1
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{base_url}}/servers/{{server}}/inputs/REC1
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+  	"clip": "ccc",
+  	"status": "record"
+  }
+}

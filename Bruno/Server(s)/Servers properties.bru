@@ -1,0 +1,15 @@
+meta {
+  name: Servers properties
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/servers?properties=id,name
+  body: none
+  auth: none
+}
+
+params:query {
+  properties: id,name
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Clip
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{base_url}}/servers/{{server}}/clips/1.1?f=json
+  body: none
+  auth: none
+}
+
+params:query {
+  f: json
+}

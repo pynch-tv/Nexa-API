@@ -1,0 +1,15 @@
+meta {
+  name: add clip Binary
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{base_url}}/servers/{{server}}/clips?filename=test28252.mp4
+  body: none
+  auth: none
+}
+
+headers {
+  Content-Type: video/mp4
+}
