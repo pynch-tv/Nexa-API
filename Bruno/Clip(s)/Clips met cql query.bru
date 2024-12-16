@@ -5,14 +5,14 @@ meta {
 }
 
 get {
-  url: {{base_url}}/servers/{{server}}/clips?filter-lang=cql-text&filter=Id eq '1.1' AND Label='HyperDeck_0007.mp4'
+  url: {{base_url}}/servers/{{server}}/clips?filter-lang=cql-text&filter=name='HyperDeck_0006.mp4'
   body: none
   auth: none
 }
 
 params:query {
   filter-lang: cql-text
-  filter: Id eq '1.1' AND Label='HyperDeck_0007.mp4'
+  filter: name='HyperDeck_0006.mp4'
 }
 
 headers {
