@@ -1,0 +1,11 @@
+meta {
+  name: Ping
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{base_url}}/servers/{{server}}/ping
+  body: none
+  auth: none
+}
