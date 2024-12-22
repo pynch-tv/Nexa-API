@@ -1,0 +1,28 @@
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio 2015/2017 cache/options directory
+.vs/
+.idea/
+.user
+
+.DS_Store
+Installer/Redistributables/ndp48-x86-x64-allos-enu.exe
+Pynch.Nexa.Installer/Redistributables/ndp48-x86-x64-allos-enu.exe
+Pynch.Nexa.Installer/Redistributables/dotnet-sdk-8.0.201-win-x64.exe
+Pynch.Nexa.Installer/Redistributables/dotnet-runtime-8.0.2-win-x64.exe
+Pynch.Nexa.Installer/Redistributables/windowsdesktop-runtime-8.0.2-win-x64.exe
+Pynch.Nexa.Installer/FAIR-Geo.pfx

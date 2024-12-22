@@ -3,9 +3,24 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>Nexa_API</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="src\.swagger-codegen-ignore" />
+    <None Remove="src\nexa-api.yaml" />
+    <None Remove="src\README.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="src\nexa-api.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="call xcopy &quot;$(TargetDir)src\*.yaml&quot; &quot;$(ProgramData)\Pynch\Nexa\wwwroot\oas&quot; /E /I /Y" />
+  </Target>
 
 </Project>
