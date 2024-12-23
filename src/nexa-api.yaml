@@ -11,10 +11,6 @@ info:
     url: https://creativecommons.org/licenses/by/4.0/
   version: 1.0.0
 servers:
-- url: http://192.168.0.157:8080/acme/unit11/v1
-  description: Test server (uses live data)
-- url: https://sandbox.pynch.tv:8080/v1
-  description: Sandboxx server (uses test data)
 - url: "{protocol}://{host}:{port}{path}"
   variables:
     protocol:
@@ -27,7 +23,7 @@ servers:
     port:
       default: "8080"
     path:
-      default: /
+      default: /v1
 security:
 - basicAuth: []
 - bearerAuth: []
