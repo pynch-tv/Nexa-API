@@ -60,12 +60,7 @@ paths:
             Feature servers (path `/servers`).
           headers:
             API-Version:
-              description: The version of the service.
-              required: true
-              style: simple
-              explode: false
-              schema:
-                $ref: '#/components/schemas/apiversion'
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -90,11 +85,7 @@ paths:
           description: a 204 response indicates the server is alive.
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                $ref: '#/components/schemas/apiversion'
+              $ref: '#/components/headers/apiVersion'
       security:
       - basicAuth: []
   /openapi:
@@ -312,13 +303,7 @@ paths:
             * An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'clip').
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -409,13 +394,7 @@ paths:
             * An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'feature').
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -452,13 +431,7 @@ paths:
           description: No response
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "404":
           description: Not Found
         "500":
@@ -487,13 +460,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "404":
           description: Not Found
         "500":
@@ -540,13 +507,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -591,13 +552,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
               schema:
@@ -647,13 +602,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -684,13 +633,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "404":
           description: Not Found
         "500":
@@ -800,13 +743,7 @@ paths:
             links to support paging (link relation `next`).
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -842,13 +779,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
       security:
       - basicAuth: []
   /servers/{serverId}/outputs/{outputId}:
@@ -901,13 +832,7 @@ paths:
             with id `serverId`
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -948,13 +873,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
       security:
       - basicAuth: []
     patch:
@@ -994,13 +913,7 @@ paths:
           description: altered
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "404":
           description: Not Found
         "500":
@@ -1108,13 +1021,7 @@ paths:
             links to support paging (link relation `next`).
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -1150,13 +1057,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
       security:
       - basicAuth: []
   /servers/{serverId}/inputs/{inputId}:
@@ -1210,13 +1111,7 @@ paths:
             with id `serverId`
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -1333,13 +1228,7 @@ paths:
             links to support paging (link relation `next`).
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -1392,13 +1281,7 @@ paths:
           description: Media uploaded
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
             Location:
               description: path to the newly created video
               required: true
@@ -1429,13 +1312,7 @@ paths:
           description: No response
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
   /servers/{serverId}/clips/{clipId}/queryables:
     get:
       tags:
@@ -1472,13 +1349,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -1522,13 +1393,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -1568,13 +1433,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
               schema:
@@ -1614,13 +1473,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
               schema:
@@ -1665,13 +1518,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -1715,13 +1562,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -1761,13 +1602,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
               schema:
@@ -1812,13 +1647,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -1862,13 +1691,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -1907,13 +1730,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
               schema:
@@ -1957,13 +1774,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -2006,13 +1817,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -2072,13 +1877,7 @@ paths:
             with id `serverId`
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -2120,13 +1919,7 @@ paths:
           description: clip removed
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "404":
           description: Not Found
         "500":
@@ -2159,13 +1952,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
       security:
       - basicAuth: []
     patch:
@@ -2203,24 +1990,12 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "204":
           description: No Content
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "404":
           description: Not Found
         "500":
@@ -2328,13 +2103,7 @@ paths:
             links to support paging (link relation `next`).
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -2376,13 +2145,7 @@ paths:
           description: No response
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
     delete:
       tags:
       - Playlist
@@ -2404,13 +2167,7 @@ paths:
           description: No response
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
   /servers/{serverId}/playlists/{playlistId}:
     get:
       tags:
@@ -2461,13 +2218,7 @@ paths:
             with id `serverId`
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -2529,13 +2280,7 @@ paths:
             with id `serverId`
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -2576,13 +2321,7 @@ paths:
           description: playlist removed
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "404":
           description: Not Found
         "500":
@@ -2614,13 +2353,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
       security:
       - basicAuth: []
 components:
@@ -2801,10 +2534,6 @@ components:
           - start
           - stop
           - pause
-    apiversion:
-      type: string
-      format: uri
-      example: 1.0.2
     codelists:
       required:
       - links
@@ -3256,6 +2985,15 @@ components:
         enum:
         - json
         - html
+  headers:
+    apiVersion:
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+        format: version
+        example: 1.0.2
   securitySchemes:
     basicAuth:
       type: http
