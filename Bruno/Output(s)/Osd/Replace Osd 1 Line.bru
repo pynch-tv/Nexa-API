@@ -1,0 +1,22 @@
+meta {
+  name: Replace Osd 1 Line
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{base_url}}/servers/{{server}}/outputs/PGM2/onscreendisplay/lines/2
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "line": "hello"
+  }
+}
