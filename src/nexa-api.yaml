@@ -1474,6 +1474,255 @@ paths:
           description: Not Found
       security:
       - basicAuth: []
+  /servers/{serverId}/outputs/{outputId}/onscreendisplay:
+    get:
+      tags:
+      - OnScreenDisplay
+      summary: get onscreendisplay
+      operationId: getOnScreenDisplay
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: outputId
+        in: path
+        description: local identifier of an output
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: PGM2
+      responses:
+        "200":
+          description: OK
+          headers:
+            API-Version:
+              $ref: '#/components/headers/apiVersion'
+          content:
+            application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
+              schema:
+                $ref: '#/components/schemas/JsonSchema'
+        "404":
+          description: Not Found
+      security:
+      - basicAuth: []
+    put:
+      tags:
+      - OnScreenDisplay
+      summary: put onscreendisplay
+      operationId: putOnScreenDisplay
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: outputId
+        in: path
+        description: local identifier of an output
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: PGM2
+      responses:
+        "200":
+          description: OK
+          headers:
+            API-Version:
+              $ref: '#/components/headers/apiVersion'
+          content:
+            application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
+              schema:
+                $ref: '#/components/schemas/JsonSchema'
+        "404":
+          description: Not Found
+      security:
+      - basicAuth: []
+  /servers/{serverId}/outputs/{outputId}/onscreendisplay/lines:
+    get:
+      tags:
+      - OnScreenDisplay
+      summary: Retrieve the schema of clip
+      operationId: getOnScreenDisplayLines
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: outputId
+        in: path
+        description: local identifier of an output
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: PGM2
+      responses:
+        "200":
+          description: OK
+          headers:
+            API-Version:
+              $ref: '#/components/headers/apiVersion'
+          content:
+            application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
+              schema:
+                $ref: '#/components/schemas/JsonSchema'
+        "404":
+          description: Not Found
+      security:
+      - basicAuth: []
+    put:
+      tags:
+      - OnScreenDisplay
+      summary: Retrieve the schema of clip
+      operationId: putOnScreenDisplayLines
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: outputId
+        in: path
+        description: local identifier of an output
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: PGM2
+      responses:
+        "200":
+          description: OK
+          headers:
+            API-Version:
+              $ref: '#/components/headers/apiVersion'
+          content:
+            application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
+              schema:
+                $ref: '#/components/schemas/JsonSchema'
+        "404":
+          description: Not Found
+      security:
+      - basicAuth: []
+  /servers/{serverId}/outputs/{outputId}/onscreendisplay/lines/{lineNr}:
+    get:
+      tags:
+      - OnScreenDisplay
+      summary: Get a line on the the OnScreenDisplay
+      operationId: getOnScreenDisplayLine
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: outputId
+        in: path
+        description: local identifier of an output
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: PGM2
+      - name: lineNr
+        in: path
+        description: line number for OnScreenDisplay
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+        example: 1
+      responses:
+        "200":
+          description: OK
+          headers:
+            API-Version:
+              $ref: '#/components/headers/apiVersion'
+          content:
+            application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
+              schema:
+                $ref: '#/components/schemas/JsonSchema'
+        "404":
+          description: Not Found
+      security:
+      - basicAuth: []
+    put:
+      tags:
+      - OnScreenDisplay
+      summary: Set a line on the the OnScreenDisplay
+      operationId: putOnScreenDisplayLine
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: outputId
+        in: path
+        description: local identifier of an output
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: PGM2
+      - name: lineNr
+        in: path
+        description: line number for OnScreenDisplay
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+        example: 1
+      responses:
+        "200":
+          description: OK
+          headers:
+            API-Version:
+              $ref: '#/components/headers/apiVersion'
+          content:
+            application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
+              schema:
+                $ref: '#/components/schemas/JsonSchema'
+        "404":
+          description: Not Found
+      security:
+      - basicAuth: []
   /servers/{serverId}/outputs/{outputId}/queryables:
     get:
       tags:
@@ -2859,6 +3108,16 @@ components:
       schema:
         type: string
       example: PGM2
+    lineNr:
+      name: lineNr
+      in: path
+      description: line number for OnScreenDisplay
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: number
+      example: 1
     datetime:
       name: datetime
       in: query
