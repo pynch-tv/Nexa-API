@@ -1,0 +1,16 @@
+meta {
+  name: Osd OnScreenDisplay
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/servers/{{server}}/outputs/PGM2/onscreendisplay
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}

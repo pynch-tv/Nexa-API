@@ -1,0 +1,33 @@
+meta {
+  name: Toggle Osd Lines
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{base_url}}/servers/{{server}}/outputs/PGM2/onscreendisplay/lines
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "lines": [
+      "",
+      "",
+      "",
+      "Beste Wensen",
+      "voor",
+      "2025",
+      "",
+      "",
+      "",
+      ""
+    ]
+  }
+}

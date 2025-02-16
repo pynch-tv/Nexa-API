@@ -1,0 +1,16 @@
+meta {
+  name: Osd 1 Lines
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/servers/{{server}}/outputs/PGM2/onscreendisplay/lines
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}

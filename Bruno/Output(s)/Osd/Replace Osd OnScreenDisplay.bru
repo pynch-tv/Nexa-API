@@ -1,0 +1,22 @@
+meta {
+  name: Replace Osd OnScreenDisplay
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{base_url}}/servers/{{server}}/outputs/PGM2/onscreendisplay
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "enabled": true
+  }
+}

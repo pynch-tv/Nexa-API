@@ -60,12 +60,7 @@ paths:
             Feature servers (path `/servers`).
           headers:
             API-Version:
-              description: The version of the service.
-              required: true
-              style: simple
-              explode: false
-              schema:
-                $ref: '#/components/schemas/apiversion'
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -90,11 +85,7 @@ paths:
           description: a 204 response indicates the server is alive.
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                $ref: '#/components/schemas/apiversion'
+              $ref: '#/components/headers/apiVersion'
       security:
       - basicAuth: []
   /openapi:
@@ -123,9 +114,15 @@ paths:
         "200":
           description: API definition
           content:
-            application/vnd.oai.openapi+json;version=3.0:
+            application/openapi+json;version=3.0:
               schema:
                 type: string
+            application/openapi+yaml;version=3.0:
+              schema:
+                type: string
+            text/html:
+              schema:
+                $ref: '#/components/schemas/htmlSchema'
       security:
       - basicAuth: []
   /codelists:
@@ -312,13 +309,7 @@ paths:
             * An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'clip').
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -409,13 +400,7 @@ paths:
             * An optional indicator about the type of the items in the collection (the default value, if the indicator is not provided, is 'feature').
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -452,13 +437,7 @@ paths:
           description: No response
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "404":
           description: Not Found
         "500":
@@ -487,13 +466,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "404":
           description: Not Found
         "500":
@@ -509,7 +482,7 @@ paths:
         The sortables resources identifies the properties that can bereferenced in the 'sortby' parameter to order the features of the collection in the response to a query. The response is returned as a JSON Schema document that describes a single JSON object where each property is a sortable.
 
         Note that the sortables schema does not specify a schema of any object that can be retrieved from the API.
-        JSON Schema is used for the sortables to have a consistent approach for describing schema information and JSON Schema is/will be used in other parts of OGC API Features to describe schemas for GeoJSON feature content including in OpenAPI documents.
+        JSON Schema is used for the sortables to have a consistent approach for describing schema information and JSON Schema is/will be used in other parts to describe schemas for GeoJSON feature content including in OpenAPI documents.
       operationId: getServerSortables
       parameters:
       - name: serverId
@@ -540,13 +513,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -591,13 +558,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
               schema:
@@ -647,13 +608,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -684,13 +639,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "404":
           description: Not Found
         "500":
@@ -800,13 +749,7 @@ paths:
             links to support paging (link relation `next`).
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -842,13 +785,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
       security:
       - basicAuth: []
   /servers/{serverId}/outputs/{outputId}:
@@ -901,13 +838,7 @@ paths:
             with id `serverId`
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -948,20 +879,14 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
       security:
       - basicAuth: []
     patch:
       tags:
       - Output
-      summary: Changes attributes of the Program ouput (used to play and stop clips
-        by changing the status)
+      summary: Changes attributes of the Ouput (play and stop clips by changing the
+        status)
       operationId: patchServerOutput
       parameters:
       - name: serverId
@@ -994,13 +919,7 @@ paths:
           description: altered
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "404":
           description: Not Found
         "500":
@@ -1012,9 +931,6 @@ paths:
       summary: collection 'recorders'
       description: |-
         Fetch recorders of the collection with id `serverId`.
-
-        Every feature in a dataset belongs to a collection. A dataset may
-        consist of multiple feature servers.
 
         Use content negotiation to request HTML or JSON.
       operationId: getServerInputs
@@ -1095,26 +1011,14 @@ paths:
         "200":
           description: |-
             The response is a document consisting of recorders in the collection.
-            The recorders included in the response are determined by the server
-            based on the query parameters of the request. To support access to
-            larger servers without overloading the client, the API supports
-            paged access with links to the next page, if more recorders are selected
-            that the page size.
+            The recorders included in the response are determined by the server based on the query parameters of the request. To support access to larger servers without overloading the client, the API supports paged access with links to the next page, if more recorders are selected that the page size.
 
             The `limit` parameter may be used to control the subset of the
             selected recorders that should be returned in the response, the page size.
-            Each page may include information about the number of selected and
-            returned recorders (`numberMatched` and `numberReturned`) as well as
-            links to support paging (link relation `next`).
+            Each page may include information about the number of selected and returned recorders (`numberMatched` and `numberReturned`) as well as links to support paging (link relation `next`).
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -1150,13 +1054,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
       security:
       - basicAuth: []
   /servers/{serverId}/inputs/{inputId}:
@@ -1210,13 +1108,7 @@ paths:
             with id `serverId`
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -1321,25 +1213,14 @@ paths:
           description: |-
             The response is a document consisting of clips in the collection.
             The clips included in the response are determined by the server
-            based on the query parameters of the request. To support access to
-            larger servers without overloading the client, the API supports
-            paged access with links to the next page, if more clips are selected
-            that the page size.
+            based on the query parameters of the request. To support access to larger servers without overloading the client, the API supports paged access with links to the next page, if more clips are selected that the page size.
 
             The `limit` parameter may be used to control the subset of the
             selected clips that should be returned in the response, the page size.
-            Each page may include information about the number of selected and
-            returned clips (`numberMatched` and `numberReturned`) as well as
-            links to support paging (link relation `next`).
+            Each page may include information about the number of selected and returned clips (`numberMatched` and `numberReturned`) as well as links to support paging (link relation `next`).
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -1392,13 +1273,7 @@ paths:
           description: Media uploaded
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
             Location:
               description: path to the newly created video
               required: true
@@ -1429,13 +1304,7 @@ paths:
           description: No response
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
   /servers/{serverId}/clips/{clipId}/queryables:
     get:
       tags:
@@ -1472,13 +1341,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -1496,7 +1359,7 @@ paths:
         The sortables resources identifies the properties that can bereferenced in the 'sortby' parameter to order the features of the collection in the response to a query. The response is returned as a JSON Schema document that describes a single JSON object where each property is a sortable.
 
         Note that the sortables schema does not specify a schema of any object that can be retrieved from the API.
-        JSON Schema is used for the sortables to have a consistent approach for describing schema information and JSON Schema is/will be used in other parts of OGC API Features to describe schemas for GeoJSON feature content including in OpenAPI documents.
+        JSON Schema is used for the sortables to have a consistent approach for describing schema information and JSON Schema is/will be used in other parts to describe schemas for GeoJSON feature content including in OpenAPI documents.
       operationId: getServerClipsSortables
       parameters:
       - name: serverId
@@ -1522,13 +1385,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -1568,13 +1425,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
               schema:
@@ -1614,13 +1465,256 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
+              $ref: '#/components/headers/apiVersion'
+          content:
+            application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
               schema:
-                type: string
-                format: version
-                example: 1.0.2
+                $ref: '#/components/schemas/JsonSchema'
+        "404":
+          description: Not Found
+      security:
+      - basicAuth: []
+  /servers/{serverId}/outputs/{outputId}/onscreendisplay:
+    get:
+      tags:
+      - OnScreenDisplay
+      summary: get onscreendisplay
+      operationId: getOnScreenDisplay
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: outputId
+        in: path
+        description: local identifier of an output
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: PGM2
+      responses:
+        "200":
+          description: OK
+          headers:
+            API-Version:
+              $ref: '#/components/headers/apiVersion'
+          content:
+            application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
+              schema:
+                $ref: '#/components/schemas/JsonSchema'
+        "404":
+          description: Not Found
+      security:
+      - basicAuth: []
+    put:
+      tags:
+      - OnScreenDisplay
+      summary: put onscreendisplay
+      operationId: putOnScreenDisplay
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: outputId
+        in: path
+        description: local identifier of an output
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: PGM2
+      responses:
+        "200":
+          description: OK
+          headers:
+            API-Version:
+              $ref: '#/components/headers/apiVersion'
+          content:
+            application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
+              schema:
+                $ref: '#/components/schemas/JsonSchema'
+        "404":
+          description: Not Found
+      security:
+      - basicAuth: []
+  /servers/{serverId}/outputs/{outputId}/onscreendisplay/lines:
+    get:
+      tags:
+      - OnScreenDisplay
+      summary: Retrieve the schema of clip
+      operationId: getOnScreenDisplayLines
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: outputId
+        in: path
+        description: local identifier of an output
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: PGM2
+      responses:
+        "200":
+          description: OK
+          headers:
+            API-Version:
+              $ref: '#/components/headers/apiVersion'
+          content:
+            application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
+              schema:
+                $ref: '#/components/schemas/JsonSchema'
+        "404":
+          description: Not Found
+      security:
+      - basicAuth: []
+    put:
+      tags:
+      - OnScreenDisplay
+      summary: Retrieve the schema of clip
+      operationId: putOnScreenDisplayLines
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: outputId
+        in: path
+        description: local identifier of an output
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: PGM2
+      responses:
+        "200":
+          description: OK
+          headers:
+            API-Version:
+              $ref: '#/components/headers/apiVersion'
+          content:
+            application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
+              schema:
+                $ref: '#/components/schemas/JsonSchema'
+        "404":
+          description: Not Found
+      security:
+      - basicAuth: []
+  /servers/{serverId}/outputs/{outputId}/onscreendisplay/lines/{lineNr}:
+    get:
+      tags:
+      - OnScreenDisplay
+      summary: Get a line on the the OnScreenDisplay
+      operationId: getOnScreenDisplayLine
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: outputId
+        in: path
+        description: local identifier of an output
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: PGM2
+      - name: lineNr
+        in: path
+        description: line number for OnScreenDisplay
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+        example: 1
+      responses:
+        "200":
+          description: OK
+          headers:
+            API-Version:
+              $ref: '#/components/headers/apiVersion'
+          content:
+            application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
+              schema:
+                $ref: '#/components/schemas/JsonSchema'
+        "404":
+          description: Not Found
+      security:
+      - basicAuth: []
+    put:
+      tags:
+      - OnScreenDisplay
+      summary: Set a line on the the OnScreenDisplay
+      operationId: putOnScreenDisplayLine
+      parameters:
+      - name: serverId
+        in: path
+        description: serial number of the machine
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: XT2
+      - name: outputId
+        in: path
+        description: local identifier of an output
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+        example: PGM2
+      - name: lineNr
+        in: path
+        description: line number for OnScreenDisplay
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: number
+        example: 1
+      responses:
+        "200":
+          description: OK
+          headers:
+            API-Version:
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
               schema:
@@ -1665,13 +1759,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -1689,7 +1777,7 @@ paths:
         The sortables resources identifies the properties that can bereferenced in the 'sortby' parameter to order the features of the collection in the response to a query. The response is returned as a JSON Schema document that describes a single JSON object where each property is a sortable.
 
         Note that the sortables schema does not specify a schema of any object that can be retrieved from the API.
-        JSON Schema is used for the sortables to have a consistent approach for describing schema information and JSON Schema is/will be used in other parts of OGC API Features to describe schemas for GeoJSON feature content including in OpenAPI documents.
+        JSON Schema is used for the sortables to have a consistent approach for describing schema information and JSON Schema is/will be used in other parts to describe schemas for GeoJSON feature content including in OpenAPI documents.
       operationId: getServerOutputSortables
       parameters:
       - name: serverId
@@ -1715,13 +1803,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -1761,13 +1843,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
               schema:
@@ -1812,13 +1888,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -1836,7 +1906,7 @@ paths:
         The sortables resources identifies the properties that can bereferenced in the 'sortby' parameter to order the features of the collection in the response to a query. The response is returned as a JSON Schema document that describes a single JSON object where each property is a sortable.
 
         Note that the sortables schema does not specify a schema of any object that can be retrieved from the API.
-        JSON Schema is used for the sortables to have a consistent approach for describing schema information and JSON Schema is/will be used in other parts of OGC API Features to describe schemas for GeoJSON feature content including in OpenAPI documents.
+        JSON Schema is used for the sortables to have a consistent approach for describing schema information and JSON Schema is/will be used in other parts to describe schemas for GeoJSON feature content including in OpenAPI documents.
       operationId: getServerInputSortables
       parameters:
       - name: serverId
@@ -1862,13 +1932,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -1907,13 +1971,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json;schema="https://json-schema.org/draft/2020-12/schema":
               schema:
@@ -1957,13 +2015,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -1981,7 +2033,7 @@ paths:
         The sortables resources identifies the properties that can bereferenced in the 'sortby' parameter to order the features of the collection in the response to a query. The response is returned as a JSON Schema document that describes a single JSON object where each property is a sortable.
 
         Note that the sortables schema does not specify a schema of any object that can be retrieved from the API.
-        JSON Schema is used for the sortables to have a consistent approach for describing schema information and JSON Schema is/will be used in other parts of OGC API Features to describe schemas for GeoJSON feature content including in OpenAPI documents.
+        JSON Schema is used for the sortables to have a consistent approach for describing schema information and JSON Schema is/will be used in other parts to describe schemas for GeoJSON feature content including in OpenAPI documents.
       operationId: getServerPlaylistSortables
       parameters:
       - name: serverId
@@ -2006,13 +2058,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/schema+json:
               schema:
@@ -2072,18 +2118,15 @@ paths:
             with id `serverId`
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/clip'
             text/html:
+              schema:
+                type: string
+            media/mp4:
               schema:
                 type: string
         "404":
@@ -2120,13 +2163,7 @@ paths:
           description: clip removed
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "404":
           description: Not Found
         "500":
@@ -2159,13 +2196,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
       security:
       - basicAuth: []
     patch:
@@ -2203,24 +2234,12 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "204":
           description: No Content
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "404":
           description: Not Found
         "500":
@@ -2328,13 +2347,7 @@ paths:
             links to support paging (link relation `next`).
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -2376,13 +2389,7 @@ paths:
           description: No response
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
     delete:
       tags:
       - Playlist
@@ -2404,13 +2411,7 @@ paths:
           description: No response
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
   /servers/{serverId}/playlists/{playlistId}:
     get:
       tags:
@@ -2461,13 +2462,7 @@ paths:
             with id `serverId`
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -2529,13 +2524,7 @@ paths:
             with id `serverId`
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
           content:
             application/json:
               schema:
@@ -2576,13 +2565,7 @@ paths:
           description: playlist removed
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
         "404":
           description: Not Found
         "500":
@@ -2614,13 +2597,7 @@ paths:
           description: OK
           headers:
             API-Version:
-              required: true
-              style: simple
-              explode: false
-              schema:
-                type: string
-                format: version
-                example: 1.0.2
+              $ref: '#/components/headers/apiVersion'
       security:
       - basicAuth: []
 components:
@@ -2801,10 +2778,6 @@ components:
           - start
           - stop
           - pause
-    apiversion:
-      type: string
-      format: uri
-      example: 1.0.2
     codelists:
       required:
       - links
@@ -3135,6 +3108,16 @@ components:
       schema:
         type: string
       example: PGM2
+    lineNr:
+      name: lineNr
+      in: path
+      description: line number for OnScreenDisplay
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: number
+      example: 1
     datetime:
       name: datetime
       in: query
@@ -3256,6 +3239,15 @@ components:
         enum:
         - json
         - html
+  headers:
+    apiVersion:
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+        format: version
+        example: 1.0.2
   securitySchemes:
     basicAuth:
       type: http
