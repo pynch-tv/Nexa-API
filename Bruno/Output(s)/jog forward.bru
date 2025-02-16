@@ -1,7 +1,7 @@
 meta {
-  name: Load clip on program 1
+  name: jog forward
   type: http
-  seq: 9
+  seq: 16
 }
 
 patch {
@@ -16,8 +16,6 @@ headers {
 
 body:json {
   {
-    "clip": {
-      "id": "1.HyperDeck0006mp4"
-    }
+    "jog": "+00:00:00:05"
   }
 }
